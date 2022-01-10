@@ -75,19 +75,52 @@ Les messages envoyés au sein et à l'aide de l’application : ils sont sécuri
 
 # DFD
 
-
+![](media/dfd.png)
 
 # Identification des sources de menaces
 
-Script-kiddies / Hackers
+## Script-kiddies / Hackers
 
-Cybercrime
+Les manipulations effectuées sont facilement retrouvés dans les logs de l'application. Ces attaques sont effectuées à la main ou par des robots dans le but de tester des applications de manières « génériques » et sans but précis afin de voir si des failles s’y trouvent.
 
-Utilisateurs avertis
+C’est donc une menace courante et élevée pour notre application.
 
-Concurrents
+- **Potentialité : Haute**
+- Motivation : s'amuser, gloire
+- Cible : n'importe quel élément actif 
+
+## Cybercrime (SPAM, Maliciels)
+
+Ayant une application de petite taille qui devra être utilisé uniquement au sein d'une entreprise, elle n'est pas forcément très intéressant pour des attaques destinées à voler des informations. La seule vrai ressource de nos applications (outre que les adresses e-mail) sont les messages (pouvant contenir des informations sensible)
+
+- **Potentialité : Moyenne**
+- Motivation : Financières
+- Cible : Vol d’informations sur les utilisateurs, spam
+
+## Utilisateurs avertis
+
+Les utilisateurs de l’application sont une source de menace élevées car ils ont accès aux fonctionnalités avancées. Par exemple, un employé mécontant d'un collègue peut tenter de saboter l’application en essayant de comprendre la structure de nos URL ou les fonctionnalités proposés par le service de messagerie. Un autre exemple : une plaisanterie entre collègues peut aussi mal tourner et amener un disfonctionnement dans l’application.
+
+- **Potentialité : Elevée**
+- Motivation : Lire des messages non destinés, modifier des messages
+- Cible : Messages
+
+## Concurrents
+
+L’application étant destinée à envoyer des messages simples, contenant peut d'informations exploitables, une attaque pour les voler ne devrait pas avoir un impact élevé sur le business. Néanmoins, cela dépend encore une fois des messages qui sont échangés.
+
+- **Potentialité : Moyenne**
+- Motivation : Saboter le projet
+- Cible n’importe quel élément
 
 # Scénarios d'attaque
 
+> Chaque scénario est décrit dans sa globalité (en gros), néanmoins des captures d’écran de notre application pour les parties contre-mesures et exemples d’attaques sont présents afin de montrer quel genre de corrections nous avons effectué. 
+>
+> A noter que les corrections ne sont pas exhaustives, une modification de code pour éviter une injection ne sera montrée qu’à un seul endroit dans ce document mais la correction peut survenir à de nombreux endroits dans le projet.
+
+
+
 # Conclusion
 
+Il serait une bonne pratique de hash et saler les mots de passes des utilisateurs, mais cela dépasse le cadre de ce projet où ne devions que nous occuper de la sécurité au niveau applicatif. Hors que le mot de passe soit hashé avant d'être sauvegarder en BDD ou non ne change rien aux risques et failles existant sur notre WebApp.
