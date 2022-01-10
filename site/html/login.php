@@ -22,8 +22,17 @@ if(isset($_POST["login"])) {
     $username = filter_var($_POST['username'], FILTER_SANITIZE_STRING);
     $password = $_POST['password'];
 
+    // Verification of captcha
+    $recaptcha = $_POST['g-recaptcha-response'];
+    $secretKey = "6Lfk2CYaAAAAAMs0fgQ_vPNbRplYfD9skt9tnmHn";
+    // Request (post) to google server to check recaptcha
+    $url = 'https://www.google.com/recaptcha/api/siteverify?secret=' . urlencode($secretKey) .  '&response=' . urlencode($recaptcha);
+    $response = file_get_contents($url);
+    // If true -> json
+    $responseKey = json_decode($response,true);
+
     //Check if form is empty
-    if (!empty($username) && !empty($password)) {
+    if (!empty($username) && !empty($password) && $responseKey['success']) {
         try {
             //Execute query to get account's informations
             $query = $pdo->prepare('SELECT * FROM User WHERE username = ? AND password = ?');
@@ -49,11 +58,14 @@ if(isset($_POST["login"])) {
                 }
             }
             else{
-                $message = "Erreur : Nom ou mot de passe incorrect !";
+                $message = "Erreur : Nom, mot de passe ou captcha incorrect !";
             }
         } catch (PDOException $e){
             echo "Error : " . $e->getMessage();
         }
+    }
+    else{
+        $message = "Erreur : Nom, mot de passe ou captcha incorrect !";
     }
 }
 ?>
@@ -64,6 +76,8 @@ if(isset($_POST["login"])) {
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="stylesheet" href="css/bootstrap.css">
+        <!-- RECAPTCHA SCENARIO -->
+        <script src='https://www.google.com/recaptcha/api.js' async defer></script>
         <title>Login Mailbox STI</title>
     </head>
     <body class="text-center">
@@ -76,9 +90,11 @@ if(isset($_POST["login"])) {
 
                 <label for="password"><b>Password</b></label>
                 <input type="password" placeholder="Password" name="password" required>
-
                 <button type="submit" class="btn btn-primary" formmethod="post" name="login">Login</button>
             </div>
+            <!-- RECAPTCHA SCENARIO -->
+            <div class="g-recaptcha" data-sitekey="6Lfk2CYaAAAAACI75fZJ1yKa5AlqwZMny85v0jUc"></div>
         </form>
         <div class="errorMsg"><?php echo $message;?></div>
+
 <?php include ('location: footer.php');?>

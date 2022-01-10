@@ -119,6 +119,43 @@ L’application étant destinée à envoyer des messages simples, contenant peut
 >
 > A noter que les corrections ne sont pas exhaustives, une modification de code pour éviter une injection ne sera montrée qu’à un seul endroit dans ce document mais la correction peut survenir à de nombreux endroits dans le projet.
 
+## Scénario 1 - Intrusion dans le système par bruteforce
+
+|              Cible               | Source de la menace |                       Motivation                        |                    Impact sur le business                    |
+| :------------------------------: | :-----------------: | :-----------------------------------------------------: | :----------------------------------------------------------: |
+| Système interne de l'application |       Hackers       | Défi, curiosité, revente d'informations confidentielles | **Impact élevé !**<br />Vol d'identité, perte de confidentialité |
+
+**<u>Scénario d'attaque :</u>** 
+
+Un utilisateur (non connecté) va bruteforce la page de login pour pouvoir se connecter.
+
+**<u>Exemple d'attaque :</u>** 
+
+Connection à la page de login et utilisation d'un dictionnaire permettant d'essayer tout type de mots de passe en faisant des essais tant que nous restons sur la page de login.
+
+**<u>Contre-mesure :</u>** 
+
+- Mise en place d'un `Captcha` afin d'éviter ce genre d'attaque.
+
+![](media/attack1-1.PNG)
+
+Modification formulaire HTML :
+
+![](media/attack1-2.PNG)
+
+Modification code PHP :
+
+![](media/attack1-3.PNG)
+
+- Augmenter la complexité des mots de passe (politique de mot de passe) afin d'augmenter le temps le temps de réussite de l'attaque.
+
+*PAS mis en place dans ce projet car on ne gère pas la création de nouveau utilisateur, mais ceci peut être une bonne idée...*
+
+- Filtrage IP (permettant ainsi la connexion uniquement au sein de l'entreprise) 
+
+*PAS mis en place dans ce projet car on travail avec `localhost`, mais ceci peut être une bonne idée...*
+
+
 
 
 # Conclusion
