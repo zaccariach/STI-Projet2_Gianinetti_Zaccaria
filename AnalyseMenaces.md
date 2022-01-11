@@ -4,7 +4,27 @@
 
 **Date : 04.01.2022**
 
-[TOC]
+### Table des matières
+
+- [Description du système](#description-du-système)
+	* [Objectifs](#objectifs)
+	* [Hypothèses de sécurité](#hypothèse-de-sécurité)
+	* [Identification du système](#identification-du-système)
+	* [Rôles utilisateurs](#rôles-utilisateurs)
+- [Liste de biens à protéger](#liste-de-biens-à-protéger)
+- [DFD](#DFD)
+- [Identification des sources de menaces](#identification-des-sources-de-menaces)
+  - [Script-kiddies / Hackers](#script-kiddies-/-hackers)
+  - [Cybercrime (SPAM, Maliciels)](#cybercrime-(spam,-maliciels))
+  - [Utilisateurs avertis](#utilisateurs-avertis)
+  - [Concurrents](#concurrents)
+
+- [Scénarios d'attaque](#scénarios-d'attaque)
+  - [Scénario 1 - Intrusion dans le système par bruteforce](#scénario-1---intrusion-dans-le-système-par-bruteforce)
+  - [Scénario 2 - Intrusion dans le système à l'aide d'une injection SQL](#scénario-2---intrusion-dans-le-système-à-l'aide-d'une-injection-sql)
+  - [Scénario 3 - Attaque d'éléments ayant un lien direct avec l'application](#scénario-3---attaque-d'éléments-ayant-un-lien-direct-avec-l'application)
+
+- [Conclusion](#conclusion)
 
 # Description du système
 
@@ -154,6 +174,57 @@ Modification code PHP :
 - Filtrage IP (permettant ainsi la connexion uniquement au sein de l'entreprise) 
 
 *PAS mis en place dans ce projet car on travail avec `localhost`, mais ceci peut être une bonne idée...*
+
+## Scénario 2 - Intrusion dans le système à l'aide d'une injection SQL
+
+|              Cible               | Source de la menace |                       Motivation                        |                    Impact sur le business                    |
+| :------------------------------: | :-----------------: | :-----------------------------------------------------: | :----------------------------------------------------------: |
+| Système interne de l'application |       Hackers       | Défi, curiosité, revente d'informations confidentielles | **Impact élevé !**<br />Vol d'identité, perte de confidentialité, vol de données |
+
+**<u>Scénario d'attaque :</u>** 
+
+Injection de code SQL dans les différents champs des formulaires (login / mail) pour obtenir le contenu des différentes tables présentes dans la base de données afin de pouvoir avoir des privilèges plus élevés : afin de pouvoir faire ce que l'on souhaite avec l'application.
+
+**<u>Exemple d'attaque :</u>** 
+
+Injection d'une requête SQL dans le formulaire de `Login`
+
+**<u>Contre-mesure :</u>** 
+
+- Utilisation de méthodes spécifiques à PHP permettant de nettoyer les inputs.
+
+*Dans le cadre du projet 1, notre projet contenait déjà différents filtres de nettoyages (notamment `FILTER_SANITIZE_STRING`) qui était utilisé pour chaque input du site dans un formulaire.* 
+
+Voici un exemple lorsqu'on envoie un nouvel e-mail avec les 3 champs à remplir dans le formulaire :
+
+![](media/attack2-1.PNG)
+
+## Scénario 3 - Attaque d'éléments ayant un lien direct avec l'application
+
+
+|              Cible               | Source de la menace |                       Motivation                        |                    Impact sur le business                    |
+| :------------------------------: | :-----------------: | :-----------------------------------------------------: | :----------------------------------------------------------: |
+| Système interne de l'application |       Hackers       | Défi, curiosité, revente d'informations confidentielles | **Impact élevé !**<br />Perte de confidentialité, vol de données, accès à tout le cœur de l'application (base de données) |
+
+**<u>Scénario d'attaque :</u>** 
+
+Lorsqu'un attaquant recherche les différentes technologies que notre application utilise, il va automatiquement essayer d'utiliser les credentials par défaut de ces technologies (par exemple pour une base de données : `phpmyadmin` ou `phpliteadmin`).
+
+**<u>Exemple d'attaque :</u>** 
+
+Se rendre sur la page `phpliteadmin.php` sur notre application et essayer de taper le mot de passe par défaut (`admin`) de la bonne version de notre `phpliteadmin` afin de pouvoir accéder à la base de données.
+
+![](media/attack3-1.PNG)
+
+**<u>Contre-mesure :</u>** 
+
+- Changement du mot de passe par défaut directement dans le fichier `phpliteadmin.php` sur notre serveur web. (chemin sur le serveur web présent sur Docker : `/usr/share/nginx/html`)
+
+![](media/attack3-2.PNG)
+
+> A noter que lors de la connexion sur `phpliteadmin`, nous avons le message suivant qui apparait (lorsque le mot de passe était encore celui par défaut)
+>
+> ![](media/attack3-3.PNG)
 
 
 
