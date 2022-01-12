@@ -1,10 +1,8 @@
-# STI-Projet1_Canton_Zaccaria
+# STI-Projet2_Gianinetti_Zaccaria
 
-###### Christian Zaccaria & Dylan Canton
+###### Created by Christian Zaccaria & Dylan Canton on 30.09.2021
 
 *Modified by Lucas Gianinetti & Christian Zaccaria on 12.01.2022*
-
-###### Date : 30.09.2021
 
 ---
 
