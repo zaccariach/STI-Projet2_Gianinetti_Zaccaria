@@ -1,6 +1,7 @@
 <?php
 /*
 Author      : Dylan Canton & Christian Zaccaria
+Modified by : Lucas Gianinetti & Christian Zaccaria on 12.01.2022
 Date        : 24.09.2021
 Filename    : home.php
 Description : Homepage for user, display received messages
@@ -52,7 +53,11 @@ unset($_SESSION['emailDeleted'])
         echo '<div class="btn-group-vertical btn-group-sm pt-1">
                 <a href="email.php?id='.$message['idMessage'].'" class="btn btn-primary" role="button">Details</a>
                 <a href="newEmail.php?id='.$message['idMessage'].'" class="btn btn-secondary btn-warning" role="button">Repondre</a>
-                <a href="deleteEmail.php?id='.$message['idMessage'].'" class="btn btn-secondary btn-danger" role="button">Supprimer</a>
+                <form action="deleteEmail.php" method="post">
+                    <input type="hidden" name="token" value="'.$_SESSION['token'].'"/>
+                    <input type="hidden" name="idMessage" value="'.$message['idMessage'].'"/>
+                    <input type="submit" class="btn btn-secondary btn-danger" value="Supprimer">
+                </form>
             </div>';
         echo "</td>";
         echo "</tr>";
@@ -62,3 +67,5 @@ unset($_SESSION['emailDeleted'])
 </table>
 
 <?php include('common/footer.php');?>
+
+

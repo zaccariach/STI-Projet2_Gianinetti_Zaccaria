@@ -1,6 +1,7 @@
 <?php
 /*
 Author      : Dylan Canton & Christian Zaccaria
+Modified by : Lucas Gianinetti & Christian Zaccaria on 12.01.2022
 Date        : 28.09.2021
 Filename    : addUser.php
 Description : Page for adding a new user on mailbox
@@ -25,7 +26,7 @@ if(isset($_POST['submitUser'])){
         if(!$checkuser){
             if(!empty($temp_user)){
                 $user = $temp_user;
-                $password = $_POST['password'];
+                $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
             } else {
                 $msgError = true;
             }

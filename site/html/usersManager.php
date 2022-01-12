@@ -1,6 +1,7 @@
 <?php
 /*
 Author      : Dylan Canton & Christian Zaccaria
+Modified by : Lucas Gianinetti & Christian Zaccaria on 12.01.2022
 Date        : 29.09.2021
 Filename    : usersManager.php
 Description : Management users page for admins
@@ -53,8 +54,16 @@ unset($_SESSION['userAdded']); ?>
             echo "<td>".$user['username']."</td>";
             echo "<td>";
             echo '<div class="btn-group-vertical btn-group-sm pt-1">
-                    <a href="modifyUser.php?username='.$user['username'].'" class="btn btn-secondary btn-warning" role="button">Modifier l'."'".'utilisateur</a>
-                    <a href="deleteUser.php?username='.$user['username'].'" class="btn btn-secondary btn-danger" role="button">Supprimer l'."'".'utilisateur</a>
+                    <form action="modifyUser.php" method="post">
+                        <input type="hidden" name="token" value="'.$_SESSION['token'].'"/>
+                        <input type="hidden" name="username" value="'.$user['username'].'"/>
+                        <input type="submit" class="btn btn-secondary btn-warning" value="Modifier l'."'".'utilisateur">
+                    </form>
+                    <form action="deleteUser.php" method="post">
+                        <input type="hidden" name="token" value="'.$_SESSION['token'].'"/>
+                        <input type="hidden" name="username" value="'.$user['username'].'"/>
+                        <input type="submit" class="btn btn-secondary btn-danger" value="Supprimer l'."'".'utilisateur">
+                    </form>
                 </div>';
             echo "</td>";
             echo "</tr>";
@@ -67,3 +76,6 @@ unset($_SESSION['userAdded']); ?>
 </div>
 
 <?php include('common/footer.php')?>
+
+
+

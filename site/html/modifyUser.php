@@ -1,6 +1,7 @@
 <?php
 /*
 Author      : Dylan Canton & Christian Zaccaria
+Modified by : Lucas Gianinetti & Christian Zaccaria on 12.01.2022
 Date        : 29.09.2021
 Filename    : modifyUser.php
 Description : Page for modify existing users
@@ -10,14 +11,26 @@ session_start();
 if(!isset($_SESSION['logged']) || $_SESSION['logged'] == false){
     header('location: login.php');
 }
-include("common/dbConnect.php");
 
+if(!empty($_POST['token'])){
+    if(!($_SESSION['token'] == $_POST['token'])){
+        session_destroy();
+        header('location: login.php');
+    }
+}
+else{
+    session_destroy();
+    header('location: login.php');
+}
+
+include("common/dbConnect.php");
 $user = $password = $isActive = $isAdmin = "";
 
 //Query for modify
 if(isset($_POST['modifyUser'])){
     if(!empty($_POST['password'])){
-        $pdo->query("UPDATE User SET password=\"".$_POST['password']."\" WHERE username=\"".$_SESSION['username']."\"");
+        $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+        $pdo->query("UPDATE User SET password=\"".$password."\" WHERE username=\"".$_SESSION['username']."\"");
     }
     $pdo->query("UPDATE User SET isValid=".$_POST['isActive']." WHERE username=".'"'.$_SESSION['username'].'"');
     $pdo->query("UPDATE User SET isAdmin=".$_POST['isAdmin']." WHERE username=".'"'.$_SESSION['username'].'"');

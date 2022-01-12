@@ -8,22 +8,28 @@
 
 - [Description du système](#description-du-système)
 	* [Objectifs](#objectifs)
-	* [Hypothèses de sécurité](#hypothèse-de-sécurité)
+	* [Hypothèses de sécurité](#hypothèses-de-sécurité)
 	* [Identification du système](#identification-du-système)
 	* [Rôles utilisateurs](#rôles-utilisateurs)
 - [Liste de biens à protéger](#liste-de-biens-à-protéger)
 - [DFD](#DFD)
 - [Identification des sources de menaces](#identification-des-sources-de-menaces)
-  - [Script-kiddies / Hackers](#script-kiddies-/-hackers)
-  - [Cybercrime (SPAM, Maliciels)](#cybercrime-(spam,-maliciels))
+  - [Script-kiddies / Hackers](#script-kiddies--hackers)
+  - [Cybercrime (SPAM, Maliciels)](#cybercrime-spam-maliciels)
   - [Utilisateurs avertis](#utilisateurs-avertis)
   - [Concurrents](#concurrents)
 
-- [Scénarios d'attaque](#scénarios-d'attaque)
+- [Scénarios d'attaque](#scénarios-dattaque)
   - [Scénario 1 - Intrusion dans le système par bruteforce](#scénario-1---intrusion-dans-le-système-par-bruteforce)
-  - [Scénario 2 - Intrusion dans le système à l'aide d'une injection SQL](#scénario-2---intrusion-dans-le-système-à-l'aide-d'une-injection-sql)
-  - [Scénario 3 - Attaque d'éléments ayant un lien direct avec l'application](#scénario-3---attaque-d'éléments-ayant-un-lien-direct-avec-l'application)
-
+  - [Scénario 2 - Intrusion dans le système à l'aide d'une injection SQL](#scénario-2---intrusion-dans-le-système-à-laide-dune-injection-sql)
+  - [Scénario 3 - Attaque d'éléments ayant un lien direct avec l'application](#scénario-3---attaque-déléments-ayant-un-lien-direct-avec-lapplication)
+  - [Scénario 4 - Accès à des ressources non autorisés](#scénario-4---accès-à-des-ressources-non-autorisés)
+  - [Scénario 5 - Suppression de ressources](#scénario-5---suppression-de-ressources)
+  - [Scénario 6 – Attaque de session utilisateur (XSS stockés)](#scénario-6---attaque-de-session-utilisateur-xss-stockés)
+  - [Scénario 7 - Vol de base de données](#scénario-7---vol-de-base-de-données)
+  - [Scénario 8 - Vol d'informations / credentials en sniffant le réseau](#scénario-8---vol-dinformations--credentials-en-sniffant-le-réseau)
+  - [Scénario 9 - Attaque infrastructure](#scénario-9---attaque-infrastructure)
+  
 - [Conclusion](#conclusion)
 
 # Description du système
@@ -226,9 +232,175 @@ Se rendre sur la page `phpliteadmin.php` sur notre application et essayer de tap
 >
 > ![](media/attack3-3.PNG)
 
+## Scénario 4 - Accès à des ressources non autorisés
+
+|              Cible               |        Source de la menace        |                          Motivation                          |                    Impact sur le business                    |
+| :------------------------------: | :-------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| Système interne de l'application | Utilisateurs du système / Hackers | Usurpation d'identité, dérangements/nuisances, vol d'information, revente d'information | **Impact élevé !**<br />Détournement possible, vol d'identité |
+
+**<u>Scénario d'attaque :</u>** 
+
+Modification de l'URL pour accéder directement à un message (notamment sur du contenu non autorisé). Pour ce faire, on peut le faire manuellement dans la barre URL de notre navigateur favori ou à l'aide d'outils (comme *Burp*) par exemple.
+
+**<u>Exemple d'attaque :</u>** 
+
+En modifiant les paramètre de l'URL (notamment la partie `id=X`), on a réussi depuis l'utilisateur *Steph* à accéder un message envoyé par *Dylan* ayant comme destinataire *Chris*. Dans ce cas malheureusement la surprise sera découverte .....
+
+![](media/attack4-1.PNG)
+
+**<u>Contre-mesure :</u>** 
+
+- Vérifier que l'`id` du message auquel l'utilisateur essaie d'accès soit bien un `id` (message) qui lui soit adressé
+
+![](media/attack4-2.PNG)
+
+>  Ici on va vérifier que l'utilisateur qui essaie de consulter le message est bien de destinataire du message.
+>
+> Le cas écheant, on se retrouver avec cette page (sans aucun message)
+>
+> ![](media/attack4-3.PNG)
 
 
+## Scénario 5 - Suppression de ressources
+
+|              Cible               |        Source de la menace        |                          Motivation                          |                    Impact sur le business                    |
+| :------------------------------: | :-------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| Système interne de l'application | Utilisateurs du système / Hackers | Usurpation d'identité, dérangements/nuisances, vol d'information,  vengeance, défi | **Impact élevé !**<br />Détournement possible, vol d'identité |
+
+**<u>Scénario d'attaque :</u>** 
+
+Modification de l'URL pour supprimer un message (n'étant pas le destinataire du message) ou carrément supprimer un utilisateur (n'étant pas administrateur. Pour ce faire, on peut le faire manuellement dans la barre URL de notre navigateur favori ou à l'aide d'outils (comme *Burp*) par exemple.
+
+Il est aussi possible d'effectuer cette attaque en envoyant par exemple un mail contenant un lien pointant vers une URL permettant de supprimer une ressource (utilisateur/message)
+
+**<u>Exemple d'attaque :</u>** 
+
+L'utilisateur va alors effectuer une requête HTTP ayant comme URL : `http://localhost:8090/deleteUser.php?username=abraham`. Ceci aura pour but de supprimer l'utilisateur `abraham`, mais aussi de nous rediriger directement vers la page de *Management des utilisateurs* (et ceci n'était pas de rôle `administrateur` forcément !). Ceci est du bien évidemment à la conception de notre application, mais avère une faille extrêmement efficace car elle permet ensuite d'administrer l'application comme bon nous semble !
+
+![](media/attack5-1.PNG)
+
+> On remarque bien que l'on est pas **administrateur** car nous n'avons pas le menu `Users management` présent dans le `header` (encadré en vert) !
+
+**<u>Contre-mesure :</u>** 
+
+- Ne pas supprimer à l'aide d'une méthode `GET` (avec le `username` dans l'URL). Privilégier une méthode `POST` combiné à une protection CSFR afin qu'un utilisateur n'ayant pas le droit de suppression sur la ressource (utilisateur / message) ne puisse rien faire (ne puisse pas envoyer de requêtes afin de supprimer des ressources non autorisés).
+
+> L'exemple ci-dessus est effectué avec la **suppression d'un utilisateur** :
+>
+> Création d'un `token` lors de la première connexion à l'application
+>
+> ![](media/attack5-2.PNG)
+>
+> Check lors de la requête de suppression afin de savoir si l'utilisateur qui l'a lancée. Dans le cas ou ces conditions échouent, l'utilisateur est automatiquement redirigé vers la page de `login` (**authentifié ou pas** : c'est le prix à payer pour essayer de contourner l'application ;) ).
+>
+> ![](media/attack5-3.PNG)
+>
+> Bouton (`form`) à cliquer lors de suppression d'un utilisateur. Dans le cas présent, si un autre utilisateur arriver tomber sur la page de gestion des utilisateurs, il sera bloqué aussi ! (D'où l'intérêt de cette `form`)
+>
+> ![](media/attack5-4.PNG)
+
+Cette contre-mesure, est aussi **appliqué** dans le cadre de ce projet (visible uniquement dans le code et non dans ce rapport) :
+
+- Suppression d'un message
+- Modification d'un utilisateur
+
+## Scénario 6 – Attaque de session utilisateur (XSS stockés)
+
+|              Cible               |   Source de la menace   |                          Motivation                          |                    Impact sur le business                    |
+| :------------------------------: | :---------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| Système interne de l'application | Utilisateurs du système | Usurpation d'identité, dérangements/nuisances, vol d'information | **Impact élevé !**<br />Détournement possible, vol d'identité |
+
+**<u>Scénario d'attaque :</u>** 
+
+Utilisation d'un formulaire du site pour stocker une faille XSS sur l’application et pouvoir voler des sessions et/ou provoquer une action non désirée à un utilisateur.
+
+**<u>Exemple d'attaque :</u>** 
+
+Sur le formulaire pour écrire un nouveau message, on peut insérer dans un champ le texte suivant par exemple : `<script>alert('This will produce a popup !');</script>`. Ceci va alors produire le résultat qu'une *popup* va s'ouvrir avec le contenu de `alert`.
+
+![](media/attack6-1.PNG)
+
+**<u>Contre-mesure :</u>** 
+
+- Limiter la taille des champs des formulaires pour éviter des attaques (dans ce cas le message sera tronqué après *X mots*)
+
+![](media/attack6-2.PNG)
+
+- Utilisation de fonctions de nettoyage (par forcément celle vu dans le [Scénario 2](#scénario-2---intrusion-dans-le-système-à-laide-dune-injection-sql)) comme `HTMLENTITIES` que nous allons utilisé pour chaque variable `$_POST` que le formulaire nous retourne.
+
+![](media/attack6-3.PNG)
+
+- Utilisation d'un framework (*OWASP AntiSamy*) --> [AntiSamy](https://owasp.org/www-project-antisamy/)
+
+## Scénario 7 - Vol de base de données
+
+|     Cible     | Source de la menace |                    Motivation                    |          Impact sur le business           |
+| :-----------: | :-----------------: | :----------------------------------------------: | :---------------------------------------: |
+| Infrastucture |       Hackers       | Curiosité, vol d'identité, revente d'information | **Impact élevé !**<br />Vol d'information |
+
+**<u>Scénario d'attaque :</u>** 
+
+Un hacker parvient à accéder à la base de données afin d'y lire tout son contenu.
+
+**<u>Exemple d'attaque :</u>** 
+
+A l'aide d'une faille dans notre application ou du serveur Web, un utilisateur/hacker parvient à entrer dans notre base de données (ou arrive exécuté des requêtes SQL) afin de pouvoir y copier les tables / Dump la base de données.
+
+**<u>Contre-mesure :</u>** 
+
+- Sécuriser l'infrastructure (serveur web) en patchant les dernières failles et toujours mettre à jour !
+
+- Encrypter et hasher toutes le contenu de la base de données.
+
+> Dans le cas présent on a seulement hasher les mots de passes afin de pouvoir montrer au moins une contre-mesure.
+>
+> Dans le cas présent nous utilisons la fonction de hash `PASSWORD_DEFAULT` (car une fonction comme typiquement `PASSWORD_ARGON2ID` n'est possible qu'à partir de PHP 7.2+)
+>
+> ![](media/attack7-1.PNG)
+
+
+
+## Scénario 8 - Vol d'informations / credentials en sniffant le réseau
+
+|     Cible      |        Source de la menace        |                          Motivation                          |                    Impact sur le business                    |
+| :------------: | :-------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| Infrastructure | Utilisateurs du système / Hackers | Dérangements/nuisances, vol d'information, revente d'information | **Impact élevé !**<br />Détournement possible, vol d'identité |
+
+**<u>Scénario d'attaque :</u>** 
+
+Sniffing du réseau afin d'y voir passer les trames TCP/IP (couche *Transport*) et les paquets *HTTP* (couche *Application*) pour pouvoir voir les informations qui y transitent.
+
+**<u>Exemple d'attaque :</u>** 
+
+Capture Wireshark du réseau afin d'y voir un utilisateur se connecter à l'application pour pouvoir savoir son `username` ainsi que `mot de passe`.
+
+**<u>Contre-mesure :</u>** 
+
+- Utilisation de *HTTPS* (pas démontrer dans le cadre de ce laboratoire car on travaille en `localhost` et qu'il faudrait aussi déployer un *certificat SSL* : ceci dépasse le projet car il concerne infrastructure et non l'implémentation de l'application en soi.)
+
+## Scénario 9 - Attaque infrastructure
+
+
+|     Cible      | Source de la menace |                          Motivation                          |                    Impact sur le business                    |
+| :------------: | :-----------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| Infrastructure |       Hackers       | Dérangements/nuisances, vol d'information, revente d'information, arrêt de service | **Impact élevé !**<br />Détournement possible, vol information, hors-service |
+
+**<u>Scénario d'attaque :</u>** 
+
+Utilisation d'un serveur web contenant des vulnérabilités connues (par exemple une version non mise à jour / ultérieure) / utilisation d'un langage de programmation obsolète ayant des failles connues.
+
+**<u>Exemple d'attaque :</u>** 
+
+- Attaque pouvant être similaire au [Scénario 8](#scénario-8---vol-dinformations--credentials-en-sniffant-le-réseau)
+- Attaque spécifique au langage de programmation / serveur web (par exemple un *Buffer Overflow* dans `Apache mod_isapi` ou `Microsoft IIS ISAPI Extensions, versions 4 et 5`.
+
+**<u>Contre-mesure :</u>** 
+
+- Mise à jour en permanence du serveur web (par exemple dans notre cas on utilise **PHP 5.6** et on pourrait migrer sur **PHP 7.0+**)
+- Mise en place d'outils de IDS et contre les attaques DDos. 
 
 # Conclusion
 
-Il serait une bonne pratique de hash et saler les mots de passes des utilisateurs, mais cela dépasse le cadre de ce projet où ne devions que nous occuper de la sécurité au niveau applicatif. Hors que le mot de passe soit hashé avant d'être sauvegarder en BDD ou non ne change rien aux risques et failles existant sur notre WebApp.
+En état des lieux, nous avons traité toutes les failles que nous avons trouvé / cherché. Nous sommes conscients qu'il en existe surement d'autres tout autant vulnérables que celles que nous vous avons proposé ici. 
+
+De plus, il est important de noter qu'il n'existe quasiment pas dans ce rapport les failles au niveau de l’infrastructure du projet.

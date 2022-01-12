@@ -1,6 +1,7 @@
 <?php
 /*
 Author      : Dylan Canton & Christian Zaccaria
+Modified by : Lucas Gianinetti & Christian Zaccaria on 12.01.2022
 Date        : 28.09.2021
 Filename    : email.php
 Description : display email selected
@@ -15,7 +16,9 @@ include("common/dbConnect.php");
 
 try {
     //Execute query to get account's informations
-    $message = $pdo->query("SELECT dateReception, sender, receiver, subject, text FROM Message WHERE idMessage=".$_GET['id'])->fetch();
+    // Scenario attack 4
+    $idCurrentUser = $_SESSION['username'];
+    $message = $pdo->query("SELECT dateReception, sender, receiver, subject, text FROM Message WHERE idMessage=".$_GET['id']." AND receiver=\"".$idCurrentUser."\"")->fetch();
 } catch(PDOException $e){
     echo $e->getMessage();
 }

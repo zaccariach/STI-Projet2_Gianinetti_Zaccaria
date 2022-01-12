@@ -1,6 +1,7 @@
 <?php
 /*
 Author      : Dylan Canton & Christian Zaccaria
+Modified by : Lucas Gianinetti & Christian Zaccaria on 12.01.2022
 Date        : 28.09.2021
 Filename    : newEmail.php
 Description : Page for write a new email
@@ -27,7 +28,9 @@ if(isset($_GET['id'])){
 
 if(isset($_POST['submitEmail'])){
     if(!empty($_POST['receiver'])){
-        $receiver = filter_var($_POST['receiver'], FILTER_SANITIZE_STRING);
+        // Test for Scenario attack 6
+        $receiver = htmlentities($_POST['receiver']);
+      //$receiver = filter_var($_POST['receiver'], FILTER_SANITIZE_STRING);
     } else {
         $receiver_err = "Destinataire requis !";
     }
@@ -72,9 +75,9 @@ include("common/header.php");
 <div class="text-center">
     <br>
     <form method="post" id="newEmail">
-        <strong>Destinataire: </strong><input type="text" name="receiver" value="<?php echo $receiver; ?>"><?php echo $receiver_err; ?><br>
-        <strong>Sujet: </strong><input type="text" name="subject" value="<?php echo $subject; ?>"><?php echo $subject_err; ?><br>
-        <strong>Message: </strong><textarea rows="6" cols="50" name="content" form="newEmail"><?php echo $content; ?></textarea><br/>
+        <strong>Destinataire: </strong><input type="text" name="receiver" maxlength="50" value="<?php echo $receiver; ?>"><?php echo $receiver_err; ?><br>
+        <strong>Sujet: </strong><input type="text" name="subject" maxlength="50" value="<?php echo $subject; ?>"><?php echo $subject_err; ?><br>
+        <strong>Message: </strong><textarea rows="6" cols="50" name="content" form="newEmail" maxlength="250"><?php echo $content; ?></textarea><br/>
         <?php echo $content_err; ?>
         <input type="submit" name="submitEmail" class="btn btn-info" role="button" value="Envoyer">
     </form>

@@ -1,12 +1,21 @@
 <?php
 /*
 Author      : Dylan Canton & Christian Zaccaria
+Modified by : Lucas Gianinetti & Christian Zaccaria on 12.01.2022
 Date        : 23.09.2021
 Filename    : login.php
 Description : Login page
 */
 
 session_start();
+//Scénario 5
+if(empty($_SESSION['token'])){
+    //Openssl works for PHP 5.6 (Because random_bytes() or random_int() works only for with PHP 7.0+
+    $_SESSION['token'] = bin2hex(openssl_random_pseudo_bytes(32));
+}
+$token = $_SESSION['token'];
+//End Scénario 5
+
 include("common/dbConnect.php");
 
 if(isset($_SESSION['logged']) && $_SESSION['logged'] === true){
@@ -35,26 +44,31 @@ if(isset($_POST["login"])) {
     if (!empty($username) && !empty($password) && $responseKey['success']) {
         try {
             //Execute query to get account's informations
-            $query = $pdo->prepare('SELECT * FROM User WHERE username = ? AND password = ?');
-            $query->execute(array($username,$password));
+            $query = $pdo->prepare('SELECT * FROM User WHERE username = ?');
+            $query->execute(array($username));
             $loginResult = $query->fetchAll();
 
             //Check if there is an existing account
             if (!empty($loginResult)) {
-                //Check if account is active
-                if($loginResult[0]['isValid'] == 0){
-                    $message = "Erreur : Ce compte est inactif, veuillez contacter un administrateur";
+                if(password_verify($password, $loginResult[0]['password'])){
+                    //Check if account is active
+                    if($loginResult[0]['isValid'] == 0){
+                        $message = "Erreur : Ce compte est inactif, veuillez contacter un administrateur";
+                    }
+                    else{
+                        //Put user infos in sessions variables
+                        $_SESSION['idUser']   = $loginResult[0]['idUser'];
+                        $_SESSION['username'] = $loginResult[0]['username'];
+                        $_SESSION['password'] = $loginResult[0]['password'];
+                        $_SESSION['isValid']  = $loginResult[0]['isValid'];
+                        $_SESSION['isAdmin']  = $loginResult[0]['isAdmin'];
+                        $_SESSION['logged'] = true;
+
+                        header('location: home.php');
+                    }
                 }
                 else{
-                    //Put user infos in sessions variables
-                    $_SESSION['idUser']   = $loginResult[0]['idUser'];
-                    $_SESSION['username'] = $loginResult[0]['username'];
-                    $_SESSION['password'] = $loginResult[0]['password'];
-                    $_SESSION['isValid']  = $loginResult[0]['isValid'];
-                    $_SESSION['isAdmin']  = $loginResult[0]['isAdmin'];
-                    $_SESSION['logged'] = true;
-
-                    header('location: home.php');
+                    $message = "Erreur : Nom, mot de passe ou captcha incorrect !";
                 }
             }
             else{
@@ -86,7 +100,7 @@ if(isset($_POST["login"])) {
             <h1 class="h3 mb-3 font-weight-normal">Login MailBox STI</h1>
             <div class="form-group">
                 <label for="username"><b>Username</b></label>
-                <input type="text" placeholder="Username" name="username" required>
+                <input type="text" placeholder="Username" name="username" maxlength="50" required>
 
                 <label for="password"><b>Password</b></label>
                 <input type="password" placeholder="Password" name="password" required>
