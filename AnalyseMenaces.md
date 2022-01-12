@@ -18,18 +18,16 @@
   - [Cybercrime (SPAM, Maliciels)](#cybercrime-spam-maliciels)
   - [Utilisateurs avertis](#utilisateurs-avertis)
   - [Concurrents](#concurrents)
-
 - [Scénarios d'attaque](#scénarios-dattaque)
   - [Scénario 1 - Intrusion dans le système par bruteforce](#scénario-1---intrusion-dans-le-système-par-bruteforce)
   - [Scénario 2 - Intrusion dans le système à l'aide d'une injection SQL](#scénario-2---intrusion-dans-le-système-à-laide-dune-injection-sql)
   - [Scénario 3 - Attaque d'éléments ayant un lien direct avec l'application](#scénario-3---attaque-déléments-ayant-un-lien-direct-avec-lapplication)
   - [Scénario 4 - Accès à des ressources non autorisés](#scénario-4---accès-à-des-ressources-non-autorisés)
   - [Scénario 5 - Suppression de ressources](#scénario-5---suppression-de-ressources)
-  - [Scénario 6 – Attaque de session utilisateur (XSS stockés)](#scénario-6---attaque-de-session-utilisateur-xss-stockés)
+  - [Scénario 6 - Attaque aux sessions utilisateur (XSS)](#scénario-6---attaque-aux-sessions-utilisateur-xss)
   - [Scénario 7 - Vol de base de données](#scénario-7---vol-de-base-de-données)
   - [Scénario 8 - Vol d'informations / credentials en sniffant le réseau](#scénario-8---vol-dinformations--credentials-en-sniffant-le-réseau)
   - [Scénario 9 - Attaque infrastructure](#scénario-9---attaque-infrastructure)
-  
 - [Conclusion](#conclusion)
 
 # Description du système
@@ -304,7 +302,7 @@ Cette contre-mesure, est aussi **appliqué** dans le cadre de ce projet (visible
 - Suppression d'un message
 - Modification d'un utilisateur
 
-## Scénario 6 – Attaque de session utilisateur (XSS stockés)
+## Scénario 6 – Attaque aux sessions utilisateur (XSS)
 
 |              Cible               |   Source de la menace   |                          Motivation                          |                    Impact sur le business                    |
 | :------------------------------: | :---------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
