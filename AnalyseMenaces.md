@@ -54,7 +54,7 @@ On part de l'hypothèse que le système d'exploitation, serveur web, navigateur 
 - Le contenu doit être protégé et non modifiable (intégrité garantie)
 - Non-répudiation de l’origine/ l’arrivée des messages
 - La création/ modification/ suppression de comptes est limitée aux administrateurs (actifs) et aucun autre rôle présent dans l’application ne doit pouvoir effectuer ces tâches.
-- Service qui doit être disponible à tout le temps (99,9999% du temps)
+- Service qui doit être disponible tout le temps (99,9999% du temps)
 
 ## Identification du système
 
@@ -105,7 +105,7 @@ Les messages envoyés au sein et à l'aide de l’application : ils sont sécuri
 
 ## Script-kiddies / Hackers
 
-Les manipulations effectuées sont facilement retrouvés dans les logs de l'application. Ces attaques sont effectuées à la main ou par des robots dans le but de tester des applications de manières « génériques » et sans but précis afin de voir si des failles s’y trouvent.
+Les manipulations effectuées sont facilement retrouvées dans les logs de l'application. Ces attaques sont effectuées à la main ou par des robots dans le but de tester des applications de manières « génériques » et sans but précis afin de voir si des failles s’y trouvent.
 
 C’est donc une menace courante et élevée pour notre application.
 
@@ -115,15 +115,15 @@ C’est donc une menace courante et élevée pour notre application.
 
 ## Cybercrime (SPAM, Maliciels)
 
-Ayant une application de petite taille qui devra être utilisé uniquement au sein d'une entreprise, elle n'est pas forcément très intéressant pour des attaques destinées à voler des informations. La seule vrai ressource de nos applications (outre que les adresses e-mail) sont les messages (pouvant contenir des informations sensible)
+Ayant une application de petite taille qui devra être utilisé uniquement au sein d'une entreprise, elle n'est pas forcément très intéressant pour des attaques destinées à voler des informations. La seule vraie ressource de nos applications (outre que les adresses e-mail) sont les messages (pouvant contenir des informations sensibles)
 
 - **Potentialité : Moyenne**
-- Motivation : Financières
+- Motivation : Financière
 - Cible : Vol d’informations sur les utilisateurs, spam
 
 ## Utilisateurs avertis
 
-Les utilisateurs de l’application sont une source de menace élevées car ils ont accès aux fonctionnalités avancées. Par exemple, un employé mécontant d'un collègue peut tenter de saboter l’application en essayant de comprendre la structure de nos URL ou les fonctionnalités proposés par le service de messagerie. Un autre exemple : une plaisanterie entre collègues peut aussi mal tourner et amener un disfonctionnement dans l’application.
+Les utilisateurs de l’application sont une source de menace élevée car ils ont accès aux fonctionnalités avancées. Par exemple, un employé mécontant d'un collègue peut tenter de saboter l’application en essayant de comprendre la structure de nos URL ou les fonctionnalités proposées par le service de messagerie. Un autre exemple : une plaisanterie entre collègues peut aussi mal tourner et amener un disfonctionnement dans l’application.
 
 - **Potentialité : Elevée**
 - Motivation : Lire des messages non destinés, modifier des messages
@@ -139,7 +139,7 @@ L’application étant destinée à envoyer des messages simples, contenant peut
 
 # Scénarios d'attaque
 
-> Chaque scénario est décrit dans sa globalité (en gros), néanmoins des captures d’écran de notre application pour les parties contre-mesures et exemples d’attaques sont présents afin de montrer quel genre de corrections nous avons effectué. 
+> Chaque scénario est décrit dans sa globalité (en gros), néanmoins des captures d’écran de notre application pour les parties contre-mesures et exemples d’attaques sont présents afin de montrer quelles genre de corrections nous avons effectué. 
 >
 > A noter que les corrections ne sont pas exhaustives, une modification de code pour éviter une injection ne sera montrée qu’à un seul endroit dans ce document mais la correction peut survenir à de nombreux endroits dans le projet.
 
@@ -234,7 +234,7 @@ Se rendre sur la page `phpliteadmin.php` sur notre application et essayer de tap
 
 |              Cible               |        Source de la menace        |                          Motivation                          |                    Impact sur le business                    |
 | :------------------------------: | :-------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
-| Système interne de l'application | Utilisateurs du système / Hackers | Usurpation d'identité, dérangements/nuisances, vol d'information, revente d'information | **Impact élevé !**<br />Détournement possible, vol d'identité |
+| Système interne de l'application | Utilisateurs du système / Hackers | Usurpation d'identité, dérangements/nuisances, vol d'informations, revente d'informations | **Impact élevé !**<br />Détournement possible, vol d'identité |
 
 **<u>Scénario d'attaque :</u>** 
 
