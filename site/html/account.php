@@ -1,7 +1,7 @@
 <?php
 /*
-Author      : Dylan Canton & Christian Zaccaria
-Date        : 28.09.2021
+Author      : Lucas Gianinetti & Christian Zaccaria
+Date        : 20.01.2022
 Filename    : account.php
 Description : Page of user account, keep info of user logged
 */
@@ -15,7 +15,8 @@ include("common/dbConnect.php");
 
 try{
     if(isset($_POST['newPassword']) && !empty($_POST['password'])){
-        $pdo->query("UPDATE User SET password=".'"'.$_POST['password'].'"'." WHERE username=".'"'.$_SESSION['username'].'"');
+        $hashPassword = password_hash($_POST['password'], PASSWORD_DEFAULT);
+        $pdo->query("UPDATE User SET password=".'"'.$hashPassword.'"'." WHERE username=".'"'.$_SESSION['username'].'"');
         $_SESSION['passwordEdited'] = true;
     }
     else if(!isset($_POST['newPassword'])){
